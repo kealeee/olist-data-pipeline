@@ -9,11 +9,11 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
     
-    # Optional: Spin up a fresh Postgres if you don't use a remote DB
     services:
       postgres:
         image: postgres:15
         env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
@@ -27,6 +27,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install Dependencies
         run: |
@@ -57,11 +65,3 @@ jobs:
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
         # If this fails, the whole workflow will show a Red X!
-
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
