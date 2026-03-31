@@ -13,9 +13,11 @@ POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 POSTGRES_DB = os.getenv("POSTGRES_DB")
 
+# This check works for BOTH your local .env AND GitHub Secrets
 if not POSTGRES_PASSWORD:
-    print("❌ Error: POSTGRES_PASSWORD not found in .env file")
+    print("❌ Error: POSTGRES_PASSWORD is not set in the system environment!")
     sys.exit(1)
+
 
 try:
     engine = create_engine(
