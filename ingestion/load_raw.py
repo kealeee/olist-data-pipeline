@@ -1,43 +1,58 @@
 import pandas as pd
-from sqlalchemy import create_engine, text  # Added 'text' for raw SQL execution
+from sqlalchemy import create_engine, text
 import os
 import sys
 
-
 print("🔧 Starting Olist Raw Data Ingestion...\n")
 
-# Read connection settings directly from environment
+# Read connection settings from environment variables
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT")
+POSTGRES_HOST = os.getenv("POSTGRES_HOST", "postgres")      # Default for GitHub Actions
+POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
 POSTGRES_DB = os.getenv("POSTGRES_DB")
 
-# This check works for BOTH your local .env AND GitHub Secrets
+# === Improved debugging for GitHub Actions ===
+print("🔍 Environment Variables Check:")
+print(f"   POSTGRES_USER     = {POSTGRES_USER}")
+print(f"   POSTGRES_HOST     = {POSTGRES_HOST}")
+print(f"   POSTGRES_PORT     = {POSTGRES_PORT}")
+print(f"   POSTGRES_DB       = {POSTGRES_DB}")
+print(f"   POSTGRES_PASSWORD = {'[SET]' if POSTGRES_PASSWORD else '[NOT SET]'}")
+
 if not POSTGRES_PASSWORD:
-    print("❌ Error: POSTGRES_PASSWORD is not set in the system environment!")
+    print("\n❌ Error: POSTGRES_PASSWORD is not set in the system environment!")
+    print("   Make sure the secret is correctly added in GitHub Repository Settings > Secrets and variables > Actions")
     sys.exit(1)
 
+if not all([POSTGRES_USER, POSTGRES_DB]):
+    print("\n❌ Error: Missing required PostgreSQL environment variables!")
+    sys.exit(1)
+
+print(f"\n✅ Connecting to PostgreSQL at {POSTGRES_HOST}:{POSTGRES_PORT} as user '{POSTGRES_USER}'...\n")
 
 try:
+    # Create SQLAlchemy engine
     engine = create_engine(
         f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}",
-        pool_pre_ping=True
+        pool_pre_ping=True,
+        echo=False  # Set to True only for extra SQL debugging
     )
     
-    # --- NEW: Ensure the 'raw' schema exists before loading ---
+    # Ensure the 'raw' schema exists
     with engine.connect() as conn:
         conn.execute(text("CREATE SCHEMA IF NOT EXISTS raw;"))
-        conn.commit()  # Required for SQLAlchemy 2.0+
+        conn.commit()
         print("✅ Successfully connected to PostgreSQL and verified 'raw' schema!")
-    # ----------------------------------------------------------
 
 except Exception as e:
     print(f"❌ Failed to connect to PostgreSQL: {e}")
-    print("Please check your .env file and make sure PostgreSQL is running.")
+    print("\n💡 Tips:")
+    print("   - Check that POSTGRES_PASSWORD secret is set in GitHub")
+    print("   - Verify the database exists and user has correct permissions")
     sys.exit(1)
 
-# Rest of the script (data directory + loading logic)
+# ====================== DATA LOADING LOGIC ======================
 data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 
 csv_files = {
@@ -57,8 +72,7 @@ for csv_file, table_name in csv_files.items():
     if os.path.exists(filepath):
         try:
             print(f"📄 Loading {csv_file} into raw.{table_name} ...")
-            # Using 'latin1' often helps with Brazilian special characters in this dataset
-            df = pd.read_csv(filepath, encoding='utf-8') 
+            df = pd.read_csv(filepath, encoding='utf-8')
             df.to_sql(
                 name=table_name,
                 con=engine,
