@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 0 * * *'   # Daily at midnight UTC
+    - cron: '0 0 * * *'
 
 jobs:
   run-pipeline:
@@ -15,7 +15,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres123     # Hardcoded dummy password for container startup only
+          POSTGRES_PASSWORD: postgres123        # Dummy password only for container startup
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
@@ -47,16 +47,11 @@ jobs:
           pip install -r requirements.txt
           pip install dbt-postgres great-expectations
 
-      # === Debug step - remove after it works ===
-      - name: Debug Postgres Logs (if container fails)
-        if: always()
-        run: docker logs ${{ job.services.postgres.id }} 2>&1 || true
-
       - name: 1. Run Ingestion
         run: python ingestion/load_raw.py
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}   # Your real secret here
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
