@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 0 * * *'   # Daily at midnight UTC
+    - cron: '0 0 * * *'
 
 jobs:
   run-pipeline:
@@ -14,12 +14,11 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_USER: postgres          # Hardcode a simple default user (safer)
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
-        # Important: Add health check so steps wait for Postgres to be ready
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -31,12 +30,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5   # Updated to v5 (recommended)
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Cache pip
-        uses: actions/cache@v4   # Updated to v4
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -51,11 +50,11 @@ jobs:
       - name: 1. Run Ingestion
         run: python ingestion/load_raw.py
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_USER: postgres                    # Match the service user
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_HOST: postgres     # Must be "postgres" (service name), not localhost
-          POSTGRES_PORT: 5432         # Hardcode default (no need for secret usually)
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
 
       - name: 2. Run dbt Transformations
         working-directory: ./olist_transform
@@ -63,7 +62,7 @@ jobs:
           dbt deps
           dbt run --profiles-dir . --target prod
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_HOST: postgres
@@ -72,7 +71,7 @@ jobs:
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_HOST: postgres
