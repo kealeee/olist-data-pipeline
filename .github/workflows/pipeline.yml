@@ -1,14 +1,15 @@
 name: Olist Production Pipeline
+
 on:
   push:
-    branches: [ main ]  # Trigger on every push to main
+    branches: [ main ]
   schedule:
-    - cron: '0 0 * * *' # Automated daily run at midnight
+    - cron: '0 0 * * *'   # Daily at midnight UTC
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -18,18 +19,24 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
+        # Important: Add health check so steps wait for Postgres to be ready
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5   # Updated to v5 (recommended)
         with:
           python-version: '3.11'
 
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4   # Updated to v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -47,8 +54,8 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_HOST: postgres
+          POSTGRES_HOST: postgres     # Must be "postgres" (service name), not localhost
+          POSTGRES_PORT: 5432         # Hardcode default (no need for secret usually)
 
       - name: 2. Run dbt Transformations
         working-directory: ./olist_transform
@@ -59,9 +66,14 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
           POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
 
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
-        # If this fails, the whole workflow will show a Red X!
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
