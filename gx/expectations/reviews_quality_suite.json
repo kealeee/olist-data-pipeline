@@ -1,0 +1,21 @@
+{
+  "expectations": [
+    {
+      "id": "3b7efcae-2c6b-45ec-b116-e283b2a025f3",
+      "kwargs": {
+        "column": "review_score",
+        "max_value": 5.0,
+        "min_value": 1.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "615837f0-113a-451a-9ac8-08bcb98e9b36",
+  "meta": {
+    "great_expectations_version": "1.8.0"
+  },
+  "name": "reviews_quality_suite",
+  "notes": null
+}

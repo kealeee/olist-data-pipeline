@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: fact_sales
+    description: "Central fact table for all sales items"
+    columns:
+      - name: order_id
+        tests:
+          - not_null  # Ensures every sale has an order ID
+      - name: product_id
+        tests:
+          - not_null
+          - relationships: # Referential Integrity Check
+              to: ref('dim_products')
+              field: product_id
+      - name: total_sale_amount
+        tests:
+          - not_null # Ensures our derived column calculation worked

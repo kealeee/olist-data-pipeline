@@ -1,0 +1,54 @@
+name: Olist Production Pipeline
+on:
+  push:
+    branches: [ main ]  # Trigger on every push to main
+  schedule:
+    - cron: '0 0 * * *' # Automated daily run at midnight
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    
+    # Optional: Spin up a fresh Postgres if you don't use a remote DB
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install dbt-postgres great-expectations
+
+      - name: 1. Run Ingestion
+        run: python load_raw.py
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: localhost # Adjust if using a remote DB
+
+      - name: 2. Run dbt Transformations
+        run: |
+          dbt deps
+          dbt run --profiles-dir . --target prod
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          # ... (add other DB secrets here)
+
+      - name: 3. Run Quality Gate (Circuit Breaker)
+        run: python run_quality_check.py
+        # If this fails, the whole workflow will show a Red X!

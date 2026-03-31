@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "3570c808-ea1e-4d02-98ae-4f58b052cb53",
+      "name": "fact_sales_asset"
+    },
+    "batch_definition": {
+      "id": "45f7d039-709a-42cb-b35a-99b13a6dc1e8",
+      "name": "all_data_batch"
+    },
+    "datasource": {
+      "id": "04fab66f-5001-4bc4-9125-a6ba8c2a3f01",
+      "name": "olist_datasource"
+    }
+  },
+  "id": "85911c15-34ec-421e-ad82-782664680ef9",
+  "name": "olist_validation_definition",
+  "suite": {
+    "id": "8931ece9-78af-4d2e-8faf-e147c83584e9",
+    "name": "olist_quality_suite"
+  }
+}

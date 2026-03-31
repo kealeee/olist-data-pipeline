@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "5d4a42bf-cf48-49ec-85ab-742ef78064f5",
+      "name": "dim_geo_asset"
+    },
+    "batch_definition": {
+      "id": "a2679f60-870e-47bc-b498-6e677475616e",
+      "name": "all_geo_batch"
+    },
+    "datasource": {
+      "id": "04fab66f-5001-4bc4-9125-a6ba8c2a3f01",
+      "name": "olist_datasource"
+    }
+  },
+  "id": "e8be78ac-dfc3-43ca-9d08-c7d1164b8922",
+  "name": "olist_geo_validation",
+  "suite": {
+    "id": "7a465fe7-b3d3-495b-8876-e5985f97c261",
+    "name": "geo_quality_suite"
+  }
+}

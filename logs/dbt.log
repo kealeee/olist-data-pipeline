@@ -1,0 +1,119 @@
+[0m15:34:37.645258 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b960b4a5b10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b960e50be50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b960b843090>]}
+
+
+============================== 15:34:37.647407 | 3eae7b80-ca04-459c-9d11-ed3d27a01526 ==============================
+[0m15:34:37.647407 [info ] [MainThread]: Running with dbt=1.10.9
+[0m15:34:37.647696 [debug] [MainThread]: running dbt with arguments {'introspect': 'True', 'invocation_command': 'dbt init olist_transform', 'use_colors': 'True', 'version_check': 'True', 'partial_parse': 'True', 'debug': 'False', 'quiet': 'False', 'log_cache_events': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'write_json': 'True', 'log_format': 'default', 'target_path': 'None', 'send_anonymous_usage_stats': 'True', 'log_path': 'logs', 'printer_width': '80', 'profiles_dir': '/home/asus/.dbt', 'no_print': 'None', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'use_experimental_parser': 'False', 'empty': 'None', 'indirect_selection': 'eager'}
+[0m15:34:37.666811 [debug] [MainThread]: Starter project path: /home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/include/starter_project
+[0m15:34:37.672247 [info ] [MainThread]: 
+Your new dbt project "olist_transform" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m15:34:37.672519 [info ] [MainThread]: Setting up your profile.
+[0m15:36:15.152988 [error] [MainThread]: Encountered an error:
+
+[0m15:36:15.162278 [error] [MainThread]: Traceback (most recent call last):
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/cli/requires.py", line 178, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/cli/requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/cli/main.py", line 483, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/task/init.py", line 346, in run
+    self.setup_profile(profile_name)
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/task/init.py", line 261, in setup_profile
+    adapter = self.ask_for_adapter_choice()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/task/init.py", line 242, in ask_for_adapter_choice
+    numeric_choice = click.prompt(prompt_msg, type=click.INT)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/click/termui.py", line 168, in prompt
+    value = prompt_func(prompt)
+            ^^^^^^^^^^^^^^^^^^^
+  File "/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/click/termui.py", line 151, in prompt_func
+    raise Abort() from None
+click.exceptions.Abort
+
+[0m15:36:15.163688 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": false, "command_wall_clock_time": 97.56354, "process_in_blocks": "1344", "process_kernel_time": 0.140785, "process_mem_max_rss": "100452", "process_out_blocks": "72", "process_user_time": 0.814816}
+[0m15:36:15.163996 [debug] [MainThread]: Command `dbt init` failed at 15:36:15.163937 after 97.56 seconds
+[0m15:36:15.164247 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b960b4f11d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b960b4a5590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7b960b4a73d0>]}
+[0m15:36:15.164501 [debug] [MainThread]: Flushing usage events
+[0m15:36:16.155011 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:37:24.098747 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f173d1b18d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f173d1b1b90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f173d1b1d10>]}
+
+
+============================== 15:37:24.101007 | 6ffc96e2-acba-4248-ad61-6afa8868a3b2 ==============================
+[0m15:37:24.101007 [info ] [MainThread]: Running with dbt=1.10.9
+[0m15:37:24.101305 [debug] [MainThread]: running dbt with arguments {'partial_parse': 'True', 'target_path': 'None', 'empty': 'None', 'cache_selected_only': 'False', 'introspect': 'True', 'warn_error': 'None', 'version_check': 'True', 'use_colors': 'True', 'indirect_selection': 'eager', 'invocation_command': 'dbt init olist_transform', 'profiles_dir': '/home/asus/.dbt', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'no_print': 'None', 'write_json': 'True', 'printer_width': '80', 'static_parser': 'True', 'debug': 'False', 'send_anonymous_usage_stats': 'True', 'use_experimental_parser': 'False', 'log_path': 'logs', 'fail_fast': 'False', 'log_format': 'default', 'quiet': 'False', 'log_cache_events': 'False'}
+[0m15:37:24.106758 [info ] [MainThread]: A project called olist_transform already exists here.
+[0m15:37:24.107710 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 0.048475444, "process_in_blocks": "0", "process_kernel_time": 0.188944, "process_mem_max_rss": "100060", "process_out_blocks": "8", "process_user_time": 0.728224}
+[0m15:37:24.107991 [debug] [MainThread]: Command `dbt init` succeeded at 15:37:24.107933 after 0.05 seconds
+[0m15:37:24.108249 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f173d1f3690>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f173d1b1d10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f173d1b3290>]}
+[0m15:37:24.108747 [debug] [MainThread]: Flushing usage events
+[0m15:37:25.167452 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:38:03.603679 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79c6f0bb5810>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79c6f0c2e550>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79c6f0c2ef10>]}
+
+
+============================== 15:38:03.605719 | 2d81d6ee-e72b-4f7d-9b2a-ee589061316f ==============================
+[0m15:38:03.605719 [info ] [MainThread]: Running with dbt=1.10.9
+[0m15:38:03.606025 [debug] [MainThread]: running dbt with arguments {'write_json': 'True', 'invocation_command': 'dbt init olist_transform', 'partial_parse': 'True', 'cache_selected_only': 'False', 'version_check': 'True', 'introspect': 'True', 'use_experimental_parser': 'False', 'log_cache_events': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'use_colors': 'True', 'empty': 'None', 'debug': 'False', 'printer_width': '80', 'static_parser': 'True', 'target_path': 'None', 'warn_error': 'None', 'fail_fast': 'False', 'profiles_dir': '/home/asus/.dbt', 'indirect_selection': 'eager', 'no_print': 'None', 'log_path': 'logs', 'log_format': 'default'}
+[0m15:38:03.613938 [debug] [MainThread]: Starter project path: /home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/dbt/include/starter_project
+[0m15:38:03.616867 [info ] [MainThread]: 
+Your new dbt project "olist_transform" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m15:38:03.617339 [info ] [MainThread]: Setting up your profile.
+[0m15:39:22.888825 [info ] [MainThread]: Profile olist_transform written to /home/asus/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m15:39:22.891305 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 79.326614, "process_in_blocks": "520", "process_kernel_time": 0.175602, "process_mem_max_rss": "104804", "process_out_blocks": "88", "process_user_time": 0.777304}
+[0m15:39:22.891727 [debug] [MainThread]: Command `dbt init` succeeded at 15:39:22.891658 after 79.33 seconds
+[0m15:39:22.891967 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79c6f3c43990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79c6f0bf37d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x79c6f0bf3550>]}
+[0m15:39:22.892198 [debug] [MainThread]: Flushing usage events
+[0m15:39:23.945349 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:39:35.399429 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1eb50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1ec90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1ea50>]}
+
+
+============================== 15:39:35.403257 | 91f4c5f5-3c43-457b-bd94-677d8e43fd92 ==============================
+[0m15:39:35.403257 [info ] [MainThread]: Running with dbt=1.10.9
+[0m15:39:35.403621 [debug] [MainThread]: running dbt with arguments {'profiles_dir': '/home/asus/.dbt', 'log_format': 'default', 'quiet': 'False', 'version_check': 'True', 'invocation_command': 'dbt debug', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'use_experimental_parser': 'False', 'no_print': 'None', 'cache_selected_only': 'False', 'partial_parse': 'True', 'debug': 'False', 'printer_width': '80', 'send_anonymous_usage_stats': 'True', 'static_parser': 'True', 'log_cache_events': 'False', 'indirect_selection': 'eager', 'fail_fast': 'False', 'empty': 'None', 'warn_error': 'None', 'log_path': 'logs', 'use_colors': 'True', 'introspect': 'True', 'target_path': 'None', 'write_json': 'True'}
+[0m15:39:35.423341 [info ] [MainThread]: dbt version: 1.10.9
+[0m15:39:35.423789 [info ] [MainThread]: python version: 3.11.14
+[0m15:39:35.424010 [info ] [MainThread]: python path: /home/asus/miniconda3/envs/elt/bin/python
+[0m15:39:35.424244 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m15:39:44.473031 [info ] [MainThread]: Using profiles dir at /home/asus/.dbt
+[0m15:39:44.473681 [info ] [MainThread]: Using profiles.yml file at /home/asus/.dbt/profiles.yml
+[0m15:39:44.474209 [info ] [MainThread]: Using dbt_project.yml file at /home/asus/olist-data-pipeline/dbt_project.yml
+[0m15:39:44.474749 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m15:39:44.475662 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 9.118937, "process_in_blocks": "413272", "process_kernel_time": 3.749924, "process_mem_max_rss": "371956", "process_out_blocks": "0", "process_user_time": 5.777571}
+[0m15:39:44.476150 [debug] [MainThread]: Command `dbt debug` failed at 15:39:44.476080 after 9.12 seconds
+[0m15:39:44.476470 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1f1d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1fa50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cadd304390>]}
+[0m15:39:44.476700 [debug] [MainThread]: Flushing usage events
+[0m15:39:45.494543 [debug] [MainThread]: An error was encountered while trying to flush usage events

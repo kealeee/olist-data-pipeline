@@ -1,0 +1,14 @@
+# This name MUST match line 6 of dbt_project.yml
+olist_transform:
+  target: prod
+  outputs:
+    prod:
+      type: postgres
+      # These env_vars must match the names in your GitHub Actions YAML
+      host: localhost
+      user: "{{ env_var('POSTGRES_USER') }}"
+      pass: "{{ env_var('POSTGRES_PASSWORD') }}"
+      port: 5432
+      dbname: "{{ env_var('POSTGRES_DB') }}"
+      schema: public 
+      threads: 4

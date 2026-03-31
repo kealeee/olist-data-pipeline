@@ -1,0 +1,23 @@
+name: 'olist_transform'
+version: '1.0.0'
+config-version: 2
+
+# This matches the name in your ~/.dbt/profiles.yml
+profile: 'olist_transform'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  olist_transform:
+    # This ensures everything in the 'marts' folder becomes a table in Postgres
+    marts:
+      +materialized: table

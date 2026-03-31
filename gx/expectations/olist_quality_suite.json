@@ -1,0 +1,29 @@
+{
+  "expectations": [
+    {
+      "id": "24d0f3db-f632-4b13-a007-43d7158038df",
+      "kwargs": {
+        "column": "order_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "eaa20206-93cc-4a05-9f47-00e3a8e79768",
+      "kwargs": {
+        "column": "price",
+        "min_value": 0.01
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "8931ece9-78af-4d2e-8faf-e147c83584e9",
+  "meta": {
+    "great_expectations_version": "1.8.0"
+  },
+  "name": "olist_quality_suite",
+  "notes": null
+}

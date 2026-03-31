@@ -1,0 +1,26 @@
+{
+  "expectations": [
+    {
+      "id": "faafd60e-aadb-4dfc-976b-311df315e8d4",
+      "kwargs": {
+        "column": "macro_region",
+        "value_set": [
+          "North",
+          "Northeast",
+          "Central-West",
+          "Southeast",
+          "South"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    }
+  ],
+  "id": "7a465fe7-b3d3-495b-8876-e5985f97c261",
+  "meta": {
+    "great_expectations_version": "1.8.0"
+  },
+  "name": "geo_quality_suite",
+  "notes": null
+}
