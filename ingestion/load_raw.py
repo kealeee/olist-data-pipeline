@@ -6,7 +6,7 @@ import sys
 
 print("🔧 Starting Olist Raw Data Ingestion...\n")
 
-# Read connection settings from .env
+# Read connection settings directly from environment
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")

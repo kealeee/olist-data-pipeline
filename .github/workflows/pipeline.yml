@@ -39,6 +39,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          
           POSTGRES_HOST: localhost # Adjust if using a remote DB
 
       - name: 2. Run dbt Transformations
@@ -47,8 +48,19 @@ jobs:
           dbt run --profiles-dir . --target prod
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          # ... (add other DB secrets here)
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_HOST: localhost
 
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
         # If this fails, the whole workflow will show a Red X!
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+        ${{ runner.os }}-pip-
