@@ -34,7 +34,7 @@ jobs:
           pip install dbt-postgres great-expectations
 
       - name: 1. Run Ingestion
-        run: python load_raw.py
+        run: python ingestion/load_raw.py
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
