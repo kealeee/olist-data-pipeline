@@ -40,7 +40,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_HOST: localhost # Adjust if using a remote DB
+          POSTGRES_HOST: postgres
 
       - name: 2. Run dbt Transformations
         working-directory: ./olist_transform
@@ -52,7 +52,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          POSTGRES_HOST: localhost
+          POSTGRES_HOST: postgres
 
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
