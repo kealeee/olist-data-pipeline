@@ -2,10 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine, text  # Added 'text' for raw SQL execution
 import os
 import sys
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
 
 print("🔧 Starting Olist Raw Data Ingestion...\n")
 
