@@ -1,9 +1,9 @@
 {{ config(materialized='table') }}
 
-SELECT
+select
     customer_id,
     customer_unique_id,
     customer_zip_code_prefix,
     customer_city,
     customer_state
-FROM {{ source('raw', 'raw_olist_customers') }}
+from {{ source('raw', 'raw_olist_customers') }}

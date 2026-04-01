@@ -1,23 +1,23 @@
 {{ config(materialized='table') }}
 
-WITH base_geography AS (
-    SELECT DISTINCT
-        geolocation_zip_code_prefix AS zip_code_prefix, -- removed quotes
-        geolocation_city AS city,                    -- removed quotes
-        geolocation_state AS state_code              -- removed quotes
-    FROM {{ source('raw', 'raw_olist_geolocation') }}
+with base_geography as (
+    select distinct
+        geolocation_zip_code_prefix as zip_code_prefix,
+        geolocation_city as city,
+        geolocation_state as state_code
+    from {{ source('raw', 'raw_olist_geolocation') }}
 )
 
-SELECT
+select
     zip_code_prefix,
     city,
     state_code,
-    CASE 
-        WHEN state_code IN ('AC','AM','AP','PA','RO','RR','TO') THEN 'North'
-        WHEN state_code IN ('AL','BA','CE','MA','PB','PE','PI','RN','SE') THEN 'Northeast'
-        WHEN state_code IN ('DF','GO','MT','MS') THEN 'Central-West'
-        WHEN state_code IN ('ES','MG','RJ','SP') THEN 'Southeast'
-        WHEN state_code IN ('PR','RS','SC') THEN 'South'
-        ELSE 'Unknown'
-    END AS macro_region
-FROM base_geography
+    case
+        when state_code in ('AC','AM','AP','PA','RO','RR','TO') then 'North'
+        when state_code in ('AL','BA','CE','MA','PB','PE','PI','RN','SE') then 'Northeast'
+        when state_code in ('DF','GO','MT','MS') then 'Central-West'
+        when state_code in ('ES','MG','RJ','SP') then 'Southeast'
+        when state_code in ('PR','RS','SC') then 'South'
+        else 'Unknown'
+    end as macro_region
+from base_geography
