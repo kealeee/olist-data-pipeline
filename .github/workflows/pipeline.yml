@@ -10,12 +10,20 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
 
+    # Job-level environment variables (this makes secrets reliable)
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+
     services:
       postgres:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres123        # Dummy password - only for starting the container
+          POSTGRES_PASSWORD: postgres123        # Dummy password for container startup only
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
@@ -47,41 +55,17 @@ jobs:
           pip install -r requirements.txt
           pip install dbt-postgres great-expectations
 
-      # === TEMPORARY DEBUG STEP (keep for 1-2 runs) ===
-      - name: Debug Secrets & Environment
-        run: |
-          echo "POSTGRES_USER     = ${POSTGRES_USER:-NOT_SET}"
-          echo "POSTGRES_DB       = ${POSTGRES_DB:-NOT_SET}"
-          echo "POSTGRES_PASSWORD length = ${#POSTGRES_PASSWORD}"
-          echo "All POSTGRES_* vars:"
-          env | grep POSTGRES_ || echo "No POSTGRES vars found"
-
       - name: 1. Run Ingestion
         run: python ingestion/load_raw.py
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
+        # No need to repeat env here — job-level env is inherited
 
       - name: 2. Run dbt Transformations
         working-directory: ./olist_transform
         run: |
           dbt deps
           dbt run --profiles-dir . --target prod
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
+        # No need to repeat env here
 
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
+        # No need to repeat env here
