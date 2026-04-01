@@ -10,5 +10,5 @@ olist_transform:
       pass: "{{ env_var('POSTGRES_PASSWORD') }}"
       port: 5432
       dbname: "{{ env_var('POSTGRES_DB') }}"
-      schema: public 
+      schema: analytics
       threads: 4
