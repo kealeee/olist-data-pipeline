@@ -12,4 +12,4 @@ sources:
       - name: raw_olist_sellers
       - name: raw_product_category_translation
       - name: raw_olist_geolocation
-      - name: raw_olist_order_reviews
+      - name: raw_olist_reviews
