@@ -3,28 +3,34 @@ name: Olist Production Pipeline
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
   schedule:
     - cron: '0 0 * * *'
+
+env:
+  POSTGRES_DB: olist_dw
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:15-alpine
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}   # ← Use real secret here
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
-        # Force fresh database every run (critical fix)
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --shm-size=1gb
 
     steps:
       - name: Checkout Code
@@ -43,39 +49,122 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install Dependencies
+      - name: Install Python Dependencies
         run: |
           pip install -r requirements.txt
-          pip install dbt-postgres great-expectations
+          pip install dbt-postgres==1.11.7
 
-      - name: 1. Run Ingestion
-        run: python ingestion/load_raw.py
+      - name: 1. Verify Postgres is ready
+        run: |
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5432 -U postgres; then
+              echo "✅ Postgres ready"
+              break
+            fi
+            echo "⏳ Waiting for Postgres ($i/30)..."
+            sleep 2
+          done || exit 1
+
+      - name: 2. Run Data Ingestion
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
+        run: python ingestion/load_raw.py
 
-      - name: 2. Run dbt Transformations
+      - name: 3. Verify Raw Tables Loaded
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+        run: |
+          psql "postgresql://postgres:postgres@localhost:5432/${{ env.POSTGRES_DB }}" -c "
+            SELECT schemaname, tablename, 
+                   (xpath('/row/c/tableoid/text()', query_to_xml(format('select * from pg_tables where schemaname=''raw'''), false, true, true)))[1]::text::int AS oid
+            FROM pg_tables WHERE schemaname = 'raw';
+          "
+          psql "postgresql://postgres:postgres@localhost:5432/${{ env.POSTGRES_DB }}" -c "
+            SELECT table_name FROM information_schema.tables 
+            WHERE table_schema = 'raw' AND table_name LIKE 'raw_olist%' 
+            ORDER BY table_name;
+          "
+
+      - name: 4. Setup dbt Profiles
         working-directory: ./olist_transform
         run: |
-          dbt clean           # <--- ADD THIS: Deletes old compiled files
-          dbt deps
-          dbt parse           # <--- ADD THIS: Re-scans the schema fresh
-          dbt run --profiles-dir . --target prod
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
+          cat > ~/.dbt/profiles.yml << EOF
+          olist_prod:
+            target: prod
+            outputs:
+              prod:
+                type: postgres
+                threads: 4
+                host: localhost
+                port: 5432
+                user: postgres
+                password: postgres
+                dbname: ${{ env.POSTGRES_DB }}
+                schema: analytics
+          EOF
+          cat ~/.dbt/profiles.yml
 
-      - name: 3. Run Quality Gate (Circuit Breaker)
+      - name: 5. dbt Debug & Parse
+        working-directory: ./olist_transform
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        run: |
+          dbt debug
+          dbt parse
+
+      - name: 6. dbt Run (Transformations)
+        working-directory: ./olist_transform
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        run: |
+          dbt clean
+          dbt deps
+          dbt run --target prod
+
+      - name: 7. dbt Tests
+        if: success()
+        working-directory: ./olist_transform
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        run: |
+          dbt test --target prod
+
+      - name: 8. Data Quality Gate
+        if: success()
         run: python run_quality_check.py
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
+
+      - name: 9. Upload dbt Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-logs-${{ github.run_id }}
+          path: |
+            olist_transform/target/
+            olist_transform/logs/
+          retention-days: 7
+
+      - name: Notify on Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: '#data-pipeline'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
