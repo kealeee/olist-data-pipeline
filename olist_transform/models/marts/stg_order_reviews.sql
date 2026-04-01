@@ -5,17 +5,17 @@ WITH ranked_reviews AS (
         review_id,
         order_id,
         review_score,
-        -- Handle null comments to prevent downstream errors
+        -- Handle null comments
         COALESCE(review_comment_title, 'No Title') as review_title,
         COALESCE(review_comment_message, 'No Message') as review_message,
         review_creation_date::timestamp as review_created_at,
         review_answer_timestamp::timestamp as review_answered_at,
-        -- Create the row number for deduplication
+        -- Deduplication logic
         ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY review_creation_date DESC) as rn
-    FROM {{ source('raw', 'raw_olist_order_reviews') }}
+    -- Changed from raw_olist_order_reviews to match your Python script name
+    FROM {{ source('raw', 'raw_olist_reviews') }} 
 )
 
--- Only keep the most recent review per order
 SELECT 
     review_id,
     order_id,

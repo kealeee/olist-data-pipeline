@@ -2,9 +2,9 @@
 
 WITH base_geography AS (
     SELECT DISTINCT
-        "geolocation_zip_code_prefix" AS zip_code_prefix,
-        "geolocation_city" AS city,
-        "geolocation_state" AS state_code
+        geolocation_zip_code_prefix AS zip_code_prefix, -- removed quotes
+        geolocation_city AS city,                    -- removed quotes
+        geolocation_state AS state_code              -- removed quotes
     FROM {{ source('raw', 'raw_olist_geolocation') }}
 )
 
