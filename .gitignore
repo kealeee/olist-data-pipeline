@@ -30,8 +30,8 @@ env.bak/
 venv.bak/
 
 # Data files (too large for Git)
-data/*.csv
-data/*.parquet
+#data/*.csv
+#data/*.parquet
 
 # Database
 *.duckdb

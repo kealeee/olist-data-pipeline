@@ -55,16 +55,17 @@ data_dir.mkdir(parents=True, exist_ok=True)
 
 # Reliable public URLs (official Olist Brazilian E-commerce dataset)
 DATA_URLS = {
-    "olist_customers_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_customers_dataset.csv",
-    "olist_geolocation_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_geolocation_dataset.csv",
-    "olist_order_items_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_order_items_dataset.csv",
-    "olist_order_payments_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_order_payments_dataset.csv",
-    "olist_order_reviews_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_order_reviews_dataset.csv",
-    "olist_orders_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_orders_dataset.csv",
-    "olist_products_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_products_dataset.csv",
-    "olist_sellers_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_sellers_dataset.csv",
-    "product_category_name_translation.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/product_category_name_translation.csv",
+    "olist_customers_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_customers_dataset.csv",
+    "olist_geolocation_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_geolocation_dataset.csv",
+    "olist_order_items_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_order_items_dataset.csv",
+    "olist_order_payments_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_order_payments_dataset.csv",
+    "olist_order_reviews_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_order_reviews_dataset.csv",
+    "olist_orders_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_orders_dataset.csv",
+    "olist_products_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_products_dataset.csv",
+    "olist_sellers_dataset.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/olist_sellers_dataset.csv",
+    "product_category_name_translation.csv": "https://raw.githubusercontent.com/olist/e-commerce/main/product_category_name_translation.csv",
 }
+
 
 csv_files = {
     "olist_customers_dataset.csv": "raw_olist_customers",
