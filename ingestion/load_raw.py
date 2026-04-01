@@ -2,15 +2,16 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 import os
 import sys
+import time
 
 print("🔧 Starting Olist Raw Data Ingestion...\n")
 
 # Read connection settings from environment variables
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST", "postgres")      # Default for GitHub Actions
-POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
-POSTGRES_DB = os.getenv("POSTGRES_DB")
+POSTGRES_USER = os.getenv("POSTGRES_USER", "").strip()
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "").strip()
+POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost").strip()   # Default to localhost for GitHub Actions
+POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432").strip()
+POSTGRES_DB = os.getenv("POSTGRES_DB", "").strip()
 
 # === Improved debugging for GitHub Actions ===
 print("🔍 Environment Variables Check:")
@@ -26,17 +27,20 @@ if not POSTGRES_PASSWORD:
     sys.exit(1)
 
 if not all([POSTGRES_USER, POSTGRES_DB]):
-    print("\n❌ Error: Missing required PostgreSQL environment variables!")
+    print("\n❌ Error: Missing required PostgreSQL environment variables (USER or DB)!")
     sys.exit(1)
 
 print(f"\n✅ Connecting to PostgreSQL at {POSTGRES_HOST}:{POSTGRES_PORT} as user '{POSTGRES_USER}'...\n")
+
+# Small delay to give the Postgres container time to be fully ready
+time.sleep(3)
 
 try:
     # Create SQLAlchemy engine
     engine = create_engine(
         f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}",
         pool_pre_ping=True,
-        echo=False  # Set to True only for extra SQL debugging
+        echo=False
     )
     
     # Ensure the 'raw' schema exists
@@ -47,9 +51,11 @@ try:
 
 except Exception as e:
     print(f"❌ Failed to connect to PostgreSQL: {e}")
-    print("\n💡 Tips:")
-    print("   - Check that POSTGRES_PASSWORD secret is set in GitHub")
-    print("   - Verify the database exists and user has correct permissions")
+    print("\n💡 Troubleshooting Tips:")
+    print("   - In GitHub Actions, use POSTGRES_HOST=localhost (not 'postgres')")
+    print("   - Make sure the Postgres service health check passed")
+    print("   - Verify your secrets (POSTGRES_PASSWORD and POSTGRES_DB) are set correctly")
+    print("   - The database user 'postgres' must have permission to create schemas")
     sys.exit(1)
 
 # ====================== DATA LOADING LOGIC ======================
