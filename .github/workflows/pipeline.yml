@@ -10,20 +10,12 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
 
-    # Job-level environment variables (this makes secrets reliable)
-    env:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-
     services:
       postgres:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres123        # Dummy password for container startup only
+          POSTGRES_PASSWORD: postgres123   # Dummy password — only for starting the container
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
@@ -55,17 +47,33 @@ jobs:
           pip install -r requirements.txt
           pip install dbt-postgres great-expectations
 
+      # === This is the most reliable way to pass secrets ===
       - name: 1. Run Ingestion
         run: python ingestion/load_raw.py
-        # No need to repeat env here — job-level env is inherited
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
 
       - name: 2. Run dbt Transformations
         working-directory: ./olist_transform
         run: |
           dbt deps
           dbt run --profiles-dir . --target prod
-        # No need to repeat env here
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
 
       - name: 3. Run Quality Gate (Circuit Breaker)
         run: python run_quality_check.py
-        # No need to repeat env here
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
