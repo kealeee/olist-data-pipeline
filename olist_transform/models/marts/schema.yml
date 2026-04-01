@@ -10,9 +10,10 @@ models:
       - name: product_id
         tests:
           - not_null
-          - relationships: # Referential Integrity Check
-              to: ref('dim_products')
-              field: product_id
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
       - name: total_sale_amount
         tests:
           - not_null # Ensures our derived column calculation worked
