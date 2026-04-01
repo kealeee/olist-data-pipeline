@@ -60,7 +60,9 @@ jobs:
       - name: 2. Run dbt Transformations
         working-directory: ./olist_transform
         run: |
+          dbt clean           # <--- ADD THIS: Deletes old compiled files
           dbt deps
+          dbt parse           # <--- ADD THIS: Re-scans the schema fresh
           dbt run --profiles-dir . --target prod
         env:
           POSTGRES_USER: postgres
