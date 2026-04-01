@@ -15,7 +15,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres123        # Dummy password only for container startup
+          POSTGRES_PASSWORD: postgres123        # Dummy password - only for starting the container
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
@@ -46,6 +46,15 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install dbt-postgres great-expectations
+
+      # === TEMPORARY DEBUG STEP (keep for 1-2 runs) ===
+      - name: Debug Secrets & Environment
+        run: |
+          echo "POSTGRES_USER     = ${POSTGRES_USER:-NOT_SET}"
+          echo "POSTGRES_DB       = ${POSTGRES_DB:-NOT_SET}"
+          echo "POSTGRES_PASSWORD length = ${#POSTGRES_PASSWORD}"
+          echo "All POSTGRES_* vars:"
+          env | grep POSTGRES_ || echo "No POSTGRES vars found"
 
       - name: 1. Run Ingestion
         run: python ingestion/load_raw.py
