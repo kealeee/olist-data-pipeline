@@ -10,6 +10,10 @@ on:
 
 env:
   POSTGRES_DB: olist_dw
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: localhost
+  POSTGRES_PORT: 5432
 
 jobs:
   run-pipeline:
@@ -20,8 +24,8 @@ jobs:
       postgres:
         image: postgres:15-alpine
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
@@ -57,7 +61,7 @@ jobs:
       - name: 1. Verify Postgres is ready
         run: |
           for i in {1..30}; do
-            if pg_isready -h localhost -p 5432 -U postgres; then
+            if pg_isready -h localhost -p 5432 -U ${{ env.POSTGRES_USER }}; then
               echo "✅ Postgres ready"
               break
             fi
@@ -67,90 +71,69 @@ jobs:
 
       - name: 2. Run Data Ingestion
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
         run: python ingestion/load_raw.py
 
       - name: 3. Verify Raw Tables Loaded
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
         run: |
-          psql "postgresql://postgres:postgres@localhost:5432/${{ env.POSTGRES_DB }}" -c "
-            SELECT schemaname, tablename, 
-                   (xpath('/root/row/c/tableoid/text()', xmlelement(name root, query_to_xml(format('select * from pg_tables where schemaname=%L and tablename=%L', schemaname, tablename), false, true, ''))))[1]::text::int AS oid
-            FROM pg_tables WHERE schemaname = 'raw';
+          psql "postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}" -c "
+            SELECT schemaname, tablename 
+            FROM pg_tables 
+            WHERE schemaname = 'raw'
+            ORDER BY tablename;
           "
-          psql "postgresql://postgres:postgres@localhost:5432/${{ env.POSTGRES_DB }}" -c "
-            SELECT table_name FROM information_schema.tables 
-            WHERE table_schema = 'raw' AND table_name LIKE 'raw_olist%' 
-            ORDER BY table_name;
+          psql "postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}" -c "
+            SELECT count(*) as total_raw_tables 
+            FROM information_schema.tables 
+            WHERE table_schema = 'raw';
           "
 
-      - name: 4. Setup dbt Profiles
-        working-directory: ./olist_transform
-        run: |
-          cat > ~/.dbt/profiles.yml << EOF
-          olist_prod:
-            target: prod
-            outputs:
-              prod:
-                type: postgres
-                threads: 4
-                host: localhost
-                port: 5432
-                user: postgres
-                password: postgres
-                dbname: ${{ env.POSTGRES_DB }}
-                schema: analytics
-          EOF
-          cat ~/.dbt/profiles.yml
-
-      - name: 5. dbt Debug & Parse
+      - name: 4. dbt Debug & Parse
         working-directory: ./olist_transform
         env:
-          POSTGRES_HOST: localhost
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
         run: |
-          dbt debug
-          dbt parse
+          dbt debug --profiles-dir .
+          dbt parse --profiles-dir .
 
-      - name: 6. dbt Run (Transformations)
+      - name: 5. dbt Run (Transformations)
         working-directory: ./olist_transform
         env:
-          POSTGRES_HOST: localhost
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
         run: |
-          dbt clean
           dbt deps
-          dbt run --target prod
+          dbt clean
+          dbt run --target prod --profiles-dir .
 
-      - name: 7. dbt Tests
+      - name: 6. dbt Tests
         if: success()
         working-directory: ./olist_transform
         env:
-          POSTGRES_HOST: localhost
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
         run: |
-          dbt test --target prod
+          dbt test --target prod --profiles-dir .
 
-      - name: 8. Data Quality Gate
+      - name: 7. Data Quality Gate
         if: success()
-        run: python run_quality_check.py
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
+        run: python run_quality_check.py
 
-      - name: 9. Upload dbt Artifacts
+      - name: 8. Upload dbt Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
