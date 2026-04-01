@@ -84,7 +84,7 @@ jobs:
         run: |
           psql "postgresql://postgres:postgres@localhost:5432/${{ env.POSTGRES_DB }}" -c "
             SELECT schemaname, tablename, 
-                   (xpath('/row/c/tableoid/text()', query_to_xml(format('select * from pg_tables where schemaname=''raw'''), false, true, '')))[1]::text::int AS oid
+                   (xpath('/root/row/c/tableoid/text()', xmlelement(name root, query_to_xml(format('select * from pg_tables where schemaname=%L and tablename=%L', schemaname, tablename), false, true, ''))))[1]::text::int AS oid
             FROM pg_tables WHERE schemaname = 'raw';
           "
           psql "postgresql://postgres:postgres@localhost:5432/${{ env.POSTGRES_DB }}" -c "
