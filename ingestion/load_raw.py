@@ -4,6 +4,7 @@ import os
 import sys
 import time
 from pathlib import Path
+import re
 
 print("🔧 Starting Olist Raw Data Ingestion...\n")
 
@@ -70,7 +71,21 @@ for csv_file, table_name in csv_files.items():
     if filepath.exists():
         try:
             print(f"📄 Loading {csv_file} → raw.{table_name}")
-            df = pd.read_csv(filepath, encoding='utf-8')
+            
+            # Use 'utf-8-sig' to automatically strip Byte Order Marks (BOM) common in Olist CSVs
+            df = pd.read_csv(filepath, encoding='utf-8-sig')
+            
+            # CRITICAL FIX FOR GITHUB ACTIONS: 
+            # 1. Strip spaces 
+            # 2. Convert to lowercase 
+            # 3. Remove non-ASCII hidden characters that break Postgres lookups
+            df.columns = (
+                df.columns
+                .str.strip()
+                .str.lower()
+                .str.replace(r'[^\x00-\x7F]+', '', regex=True)
+            )
+
             df.to_sql(
                 name=table_name,
                 con=engine,
