@@ -53,17 +53,17 @@ except Exception as e:
 data_dir = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) / "data"
 data_dir.mkdir(parents=True, exist_ok=True)
 
-# Public reliable URLs (from a well-known open repo)
+# Reliable public URLs (official Olist Brazilian E-commerce dataset)
 DATA_URLS = {
-    "olist_customers_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_customers_dataset.csv",
-    "olist_geolocation_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_geolocation_dataset.csv",
-    "olist_order_items_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_order_items_dataset.csv",
-    "olist_order_payments_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_order_payments_dataset.csv",
-    "olist_order_reviews_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_order_reviews_dataset.csv",
-    "olist_orders_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_orders_dataset.csv",
-    "olist_products_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_products_dataset.csv",
-    "olist_sellers_dataset.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/olist_sellers_dataset.csv",
-    "product_category_name_translation.csv": "https://raw.githubusercontent.com/ozlerhakan/olist/master/product_category_name_translation.csv",
+    "olist_customers_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_customers_dataset.csv",
+    "olist_geolocation_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_geolocation_dataset.csv",
+    "olist_order_items_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_order_items_dataset.csv",
+    "olist_order_payments_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_order_payments_dataset.csv",
+    "olist_order_reviews_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_order_reviews_dataset.csv",
+    "olist_orders_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_orders_dataset.csv",
+    "olist_products_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_products_dataset.csv",
+    "olist_sellers_dataset.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/olist_sellers_dataset.csv",
+    "product_category_name_translation.csv": "https://raw.githubusercontent.com/olistbr/brazilian-ecommerce/master/product_category_name_translation.csv",
 }
 
 csv_files = {
@@ -86,7 +86,7 @@ def download_file(url: str, filepath: Path) -> bool:
 
     print(f"📥 Downloading {filepath.name}...")
     try:
-        response = requests.get(url, stream=True, timeout=90)
+        response = requests.get(url, stream=True, timeout=120)
         response.raise_for_status()
         with open(filepath, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
@@ -98,11 +98,11 @@ def download_file(url: str, filepath: Path) -> bool:
         return False
 
 
-# Main loading loop
+# Download missing files and load them
 for csv_file, table_name in csv_files.items():
     filepath = data_dir / csv_file
 
-    # Download if missing
+    # Download if file doesn't exist
     if not filepath.exists():
         url = DATA_URLS.get(csv_file)
         if url:
@@ -111,10 +111,10 @@ for csv_file, table_name in csv_files.items():
                 print(f"⚠️ Skipping {csv_file} - download failed")
                 continue
         else:
-            print(f"⚠️ No URL configured for {csv_file}")
+            print(f"⚠️ No download URL for {csv_file}")
             continue
 
-    # Load into database
+    # Load file into PostgreSQL
     if filepath.exists():
         try:
             print(f"📄 Loading {csv_file} → raw.{table_name}")
@@ -128,7 +128,7 @@ for csv_file, table_name in csv_files.items():
                 chunksize=5000,
                 method='multi'
             )
-            print(f"✅ Loaded {len(df):,} rows into raw.{table_name}")
+            print(f"✅ Successfully loaded {len(df):,} rows into raw.{table_name}")
         except Exception as e:
             print(f"❌ Error loading {csv_file}: {e}")
     else:
