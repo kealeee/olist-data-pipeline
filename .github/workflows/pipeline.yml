@@ -52,7 +52,7 @@ jobs:
       - name: Install Python Dependencies
         run: |
           pip install -r requirements.txt
-          pip install dbt-postgres==1.11.7
+          pip install dbt-postgres
 
       - name: 1. Verify Postgres is ready
         run: |
