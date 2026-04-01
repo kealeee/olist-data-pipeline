@@ -15,10 +15,11 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres123        # Dummy password for container startup only
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}   # ← Use real secret here
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         ports:
           - 5432:5432
+        # Force fresh database every run (critical fix)
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -53,7 +54,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_HOST: localhost          # ← Changed to localhost (most reliable)
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
 
       - name: 2. Run dbt Transformations
