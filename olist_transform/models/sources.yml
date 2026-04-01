@@ -2,7 +2,6 @@ version: 2
 
 sources:
   - name: raw
-    database: olist_dw
     schema: raw
     tables:
       - name: raw_olist_customers
