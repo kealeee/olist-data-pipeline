@@ -81,9 +81,15 @@ jobs:
       - name: 3. Verify Raw Tables Loaded
         run: |
           psql "postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}" -c "
-            SELECT schemaname, tablename, 
-                   (xpath('/root/row/c/tableoid/text()', xmlelement(name root, query_to_xml(format('select * from pg_tables where schemaname=%L and tablename=%L', schemaname, tablename), false, true, ''))))::text::int AS oid
-            FROM pg_tables WHERE schemaname = 'raw';
+            SELECT schemaname, tablename 
+            FROM pg_tables 
+            WHERE schemaname = 'raw'
+            ORDER BY tablename;
+          "
+          psql "postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}" -c "
+            SELECT count(*) as total_raw_tables 
+            FROM information_schema.tables 
+            WHERE table_schema = 'raw';
           "
 
       - name: 4. dbt Debug & Parse
