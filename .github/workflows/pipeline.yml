@@ -11,7 +11,7 @@ on:
 env:
   POSTGRES_DB: olist_dw
   POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   POSTGRES_HOST: localhost
   POSTGRES_PORT: 5432
 
