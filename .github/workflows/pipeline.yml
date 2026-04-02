@@ -37,8 +37,19 @@ jobs:
           --shm-size=1gb
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Code with Git LFS
         uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install Git LFS and Pull Large Files
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
+          git lfs install
+          git lfs pull
+          echo "✅ Git LFS files pulled successfully"
+          ls -lh data/   # Optional: show file sizes to verify real data (should be large, not ~100 bytes)
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -58,18 +69,18 @@ jobs:
           pip install -r requirements.txt
           pip install dbt-postgres
 
-      - name: 1. Verify Postgres is ready
+      - name: 1. Verify Postgres is Ready
         run: |
           for i in {1..30}; do
             if pg_isready -h localhost -p 5432 -U ${{ env.POSTGRES_USER }}; then
-              echo "✅ Postgres ready"
+              echo "✅ Postgres is ready"
               break
             fi
             echo "⏳ Waiting for Postgres ($i/30)..."
             sleep 2
           done || exit 1
 
-      - name: 2. Run Data Ingestion
+      - name: 2. Run Data Ingestion (load_raw.py)
         env:
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
