@@ -1,9 +1,30 @@
+import os
+import sys
+from dotenv import load_dotenv
+
 import great_expectations as gx
 from great_expectations.expectations import (
     ExpectColumnValuesToBeBetween, 
     ExpectColumnValuesToNotBeNull, 
     ExpectColumnValuesToBeInSet
 )
+
+
+
+# --- 🛠️ NEW: LOAD ENVIRONMENT VARIABLES ---
+# This ensures GitHub Actions can pass the Postgres password to the GX context
+load_dotenv() 
+
+POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres").strip()
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres").strip()
+POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost").strip()
+POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432").strip()
+POSTGRES_DB = os.getenv("POSTGRES_DB", "olist_dw").strip()
+
+print(f"📡 Quality Check connecting to: {POSTGRES_HOST}:{POSTGRES_PORT} as {POSTGRES_USER}")
+# ------------------------------------------
+
+
 
 # 1. Initialize the Context
 context = gx.get_context()

@@ -117,3 +117,40 @@ Internal Error
 [0m15:39:44.476470 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1f1d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cad8d1fa50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x71cadd304390>]}
 [0m15:39:44.476700 [debug] [MainThread]: Flushing usage events
 [0m15:39:45.494543 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m10:33:28.686570 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f001383a290>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f00139c2ad0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f00139c1bd0>]}
+
+
+============================== 10:33:28.690089 | 4c9701ac-c746-413f-b314-90d9cd7856d6 ==============================
+[0m10:33:28.690089 [info ] [MainThread]: Running with dbt=1.10.9
+[0m10:33:28.690528 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'empty': 'False', 'use_colors': 'True', 'invocation_command': 'dbt run --full-refresh', 'debug': 'False', 'write_json': 'True', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'profiles_dir': '/home/asus/.dbt', 'target_path': 'None', 'indirect_selection': 'eager', 'introspect': 'True', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'no_print': 'None', 'partial_parse': 'True', 'cache_selected_only': 'False', 'use_experimental_parser': 'False', 'version_check': 'True', 'log_path': 'logs', 'log_cache_events': 'False', 'log_format': 'default', 'fail_fast': 'False'}
+[0m10:33:28.690786 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /home/asus/olist-data-pipeline/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m10:33:28.691774 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": false, "command_wall_clock_time": 0.04530508, "process_in_blocks": "92584", "process_kernel_time": 0.308381, "process_mem_max_rss": "118268", "process_out_blocks": "8", "process_user_time": 1.26393}
+[0m10:33:28.692033 [debug] [MainThread]: Command `dbt run` failed at 10:33:28.691979 after 0.05 seconds
+[0m10:33:28.692281 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f0013843fd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f00138408d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f0013843e90>]}
+[0m10:33:28.692490 [debug] [MainThread]: Flushing usage events
+[0m10:33:29.618754 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m10:35:24.230764 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7521afc02a50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7521afa83b10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7521afc01150>]}
+
+
+============================== 10:35:24.235406 | d886bbac-8ecc-433a-949d-37036e7f3fb9 ==============================
+[0m10:35:24.235406 [info ] [MainThread]: Running with dbt=1.10.9
+[0m10:35:24.235781 [debug] [MainThread]: running dbt with arguments {'invocation_command': 'dbt debug', 'profiles_dir': '/home/asus/.dbt', 'partial_parse': 'True', 'use_colors': 'True', 'cache_selected_only': 'False', 'log_path': 'logs', 'log_cache_events': 'False', 'use_experimental_parser': 'False', 'fail_fast': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'write_json': 'True', 'no_print': 'None', 'printer_width': '80', 'log_format': 'default', 'empty': 'None', 'static_parser': 'True', 'debug': 'False', 'send_anonymous_usage_stats': 'True', 'introspect': 'True', 'warn_error': 'None', 'target_path': 'None', 'indirect_selection': 'eager', 'quiet': 'False'}
+[0m10:35:24.254232 [info ] [MainThread]: dbt version: 1.10.9
+[0m10:35:24.254554 [info ] [MainThread]: python version: 3.11.14
+[0m10:35:24.255045 [info ] [MainThread]: python path: /home/asus/miniconda3/envs/elt/bin/python
+[0m10:35:24.255310 [info ] [MainThread]: os info: Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39
+[0m10:35:34.893408 [info ] [MainThread]: Using profiles dir at /home/asus/.dbt
+[0m10:35:34.893808 [info ] [MainThread]: Using profiles.yml file at /home/asus/.dbt/profiles.yml
+[0m10:35:34.894410 [info ] [MainThread]: Using dbt_project.yml file at /home/asus/olist-data-pipeline/dbt_project.yml
+[0m10:35:34.895011 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m10:35:34.895857 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 9.051456, "process_in_blocks": "391672", "process_kernel_time": 3.424244, "process_mem_max_rss": "408072", "process_out_blocks": "16", "process_user_time": 7.080922}
+[0m10:35:34.896297 [debug] [MainThread]: Command `dbt debug` failed at 10:35:34.896218 after 9.05 seconds
+[0m10:35:34.896539 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7521afa81e10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7521b0a59110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7521afdb5c50>]}
+[0m10:35:34.896810 [debug] [MainThread]: Flushing usage events
+[0m10:35:35.952789 [debug] [MainThread]: An error was encountered while trying to flush usage events
