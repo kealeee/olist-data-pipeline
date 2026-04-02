@@ -13,7 +13,7 @@ with ranked_reviews as (
             partition by order_id
             order by review_creation_date desc
         ) as rn
-    from {{ source('raw', 'raw_olist_reviews') }}
+    from {{ source('raw', 'raw_olist_order_reviews') }}  -- ✅ Correct table name
 )
 
 select
