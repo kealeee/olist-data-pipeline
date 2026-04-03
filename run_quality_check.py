@@ -101,3 +101,48 @@ if sales_results.success and geo_results.success and reviews_results.success:
     print("✅ PASS: All production assets meet quality standards.")
 else:
     print("❌ FAIL: Quality issues detected. Check Data Docs for details.")
+    
+
+
+# --- 🎯 SECTION E: STAGING ORDERS VALIDATION ---
+# Logic: Ensure staging orders data is clean before downstream models
+try:
+    orders_suite = context.suites.get(name="orders_quality_suite")
+except gx.exceptions.DataContextError:
+    orders_suite = context.suites.add(gx.ExpectationSuite(name="orders_quality_suite"))
+
+# <<< NEW: Register stg_orders asset under olist_datasource >>>
+olist_ds = context.data_sources.get("olist_datasource")
+try:
+    orders_asset = olist_ds.get_asset("stg_orders_asset")
+except LookupError:
+    orders_asset = olist_ds.add_table_asset(
+        name="stg_orders_asset",
+        table_name="stg_orders",
+        schema_name="analytics"   # adjust if your schema differs
+    )
+# <<< END NEW >>>
+
+# Expectations for stg_orders
+orders_suite.add_expectation(ExpectColumnValuesToNotBeNull(column="order_id"))
+orders_suite.add_expectation(ExpectColumnValuesToBeInSet(
+    column="order_status",
+    value_set=['delivered', 'shipped', 'canceled', 'processing', 'invoiced']
+))
+orders_suite.add_expectation(ExpectColumnValuesToNotBeNull(column="order_purchase_timestamp"))
+
+# Timestamp sanity check (basic version)
+orders_suite.add_expectation(ExpectColumnValuesToBeBetween(
+    column="order_delivered_customer_date",
+    min_value="2016-01-01",  # adjust to dataset range
+    max_value="2021-12-31"
+))
+
+try:
+    orders_batch = orders_asset.add_batch_definition_whole_table(name="all_orders_batch")
+except:
+    orders_batch = orders_asset.get_batch_definition(name="all_orders_batch")
+
+orders_val_def = context.validation_definitions.add_or_update(
+    gx.ValidationDefinition(name="olist_orders_validation", data=orders_batch, suite=orders_suite)
+)

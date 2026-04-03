@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "id": "82d124cb-b8fe-4133-adc8-3832920a287a",
+      "kwargs": {
+        "column": "order_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "0aff2e4f-ae7d-4c05-9bb5-1f2902a84129",
+      "kwargs": {
+        "column": "order_status",
+        "value_set": [
+          "delivered",
+          "shipped",
+          "canceled",
+          "processing",
+          "invoiced"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "cb9c6ac2-e5c8-4a16-bca3-e66bb88b8d8a",
+      "kwargs": {
+        "column": "order_purchase_timestamp"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "711d9cb9-3b72-48fa-b47d-ce5b478cdceb",
+      "kwargs": {
+        "column": "order_delivered_customer_date",
+        "max_value": "2021-12-31",
+        "min_value": "2016-01-01"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "0dbe7517-5cbb-47c1-969c-50812c8ff258",
+  "meta": {
+    "great_expectations_version": "1.8.0"
+  },
+  "name": "orders_quality_suite",
+  "notes": null
+}

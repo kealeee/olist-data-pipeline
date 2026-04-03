@@ -115,6 +115,16 @@ fluent_datasources:
             partitioner:
         table_name: stg_order_reviews
         schema_name: analytics
+      stg_orders_asset:
+        type: table
+        id: 1a1d90a9-521c-4356-9fae-6ff7af7c8077
+        batch_metadata: {}
+        batch_definitions:
+          all_orders_batch:
+            id: 8d144d80-642a-4eaf-91a4-23470ec16762
+            partitioner:
+        table_name: stg_orders
+        schema_name: analytics
     connection_string: 
       postgresql+psycopg2://postgres:551217@localhost:5432/olist_dw
 data_context_id: 2a28f13e-b852-491b-ab77-838fae05670b
