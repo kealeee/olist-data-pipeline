@@ -1,0 +1,95 @@
+{
+  "id": null,
+  "meta": {
+    "active_batch_definition": {
+      "batch_identifiers": {},
+      "data_asset_name": "fact_sales_asset",
+      "data_connector_name": "fluent",
+      "datasource_name": "olist_datasource"
+    },
+    "batch_markers": {
+      "ge_load_time": "20260330T043322.383386Z"
+    },
+    "batch_parameters": null,
+    "batch_spec": {
+      "batch_identifiers": {},
+      "data_asset_name": "fact_sales_asset",
+      "schema_name": "analytics",
+      "table_name": "fact_sales",
+      "type": "table"
+    },
+    "checkpoint_id": null,
+    "great_expectations_version": "1.8.0",
+    "run_id": {
+      "run_name": null,
+      "run_time": "2026-03-30T12:33:22.728914+08:00"
+    },
+    "validation_id": "85911c15-34ec-421e-ad82-782664680ef9",
+    "validation_time": "2026-03-30T04:33:22.728914+00:00"
+  },
+  "results": [
+    {
+      "exception_info": {
+        "MetricConfigurationID(metric_name='column_values.between.condition', metric_domain_kwargs_id='c9ce95dfb2247594f35233b20fa09c75', metric_value_kwargs_id='e732355ca3b733aad9596a6dbe092ebe')": {
+          "exception_message": "Error: The column \"payment_value\" in BatchData does not exist.",
+          "exception_traceback": "Traceback (most recent call last):\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/execution_engine/execution_engine.py\", line 577, in _process_direct_and_bundled_metric_computation_configurations\n    metric_computation_configuration.metric_fn(  # type: ignore[misc] # F not callable\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/metric_provider.py\", line 99, in inner_func\n    return metric_fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/map_metric_provider/column_condition_partial.py\", line 162, in inner_func\n    metric_domain_kwargs = get_dbms_compatible_metric_domain_kwargs(\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/util.py\", line 700, in get_dbms_compatible_metric_domain_kwargs\n    column_name: str | sqlalchemy.quoted_name = get_dbms_compatible_column_names(\n                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/util.py\", line 770, in get_dbms_compatible_column_names\n    _verify_column_names_exist_and_get_normalized_typed_column_names_map(\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/util.py\", line 855, in _verify_column_names_exist_and_get_normalized_typed_column_names_map\n    raise gx_exceptions.InvalidMetricAccessorDomainKwargsKeyError(\ngreat_expectations.exceptions.exceptions.InvalidMetricAccessorDomainKwargsKeyError: Error: The column \"payment_value\" in BatchData does not exist.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/validator/validation_graph.py\", line 290, in _resolve\n    self._execution_engine.resolve_metrics(\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/execution_engine/execution_engine.py\", line 294, in resolve_metrics\n    return self._process_direct_and_bundled_metric_computation_configurations(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/execution_engine/execution_engine.py\", line 582, in _process_direct_and_bundled_metric_computation_configurations\n    raise gx_exceptions.MetricResolutionError(\ngreat_expectations.exceptions.exceptions.MetricResolutionError: Error: The column \"payment_value\" in BatchData does not exist.\n",
+          "raised_exception": true
+        },
+        "MetricConfigurationID(metric_name='column_values.nonnull.condition', metric_domain_kwargs_id='c9ce95dfb2247594f35233b20fa09c75', metric_value_kwargs_id=())": {
+          "exception_message": "Error: The column \"payment_value\" in BatchData does not exist.",
+          "exception_traceback": "Traceback (most recent call last):\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/execution_engine/execution_engine.py\", line 577, in _process_direct_and_bundled_metric_computation_configurations\n    metric_computation_configuration.metric_fn(  # type: ignore[misc] # F not callable\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/metric_provider.py\", line 99, in inner_func\n    return metric_fn(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/map_metric_provider/column_condition_partial.py\", line 162, in inner_func\n    metric_domain_kwargs = get_dbms_compatible_metric_domain_kwargs(\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/util.py\", line 700, in get_dbms_compatible_metric_domain_kwargs\n    column_name: str | sqlalchemy.quoted_name = get_dbms_compatible_column_names(\n                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/util.py\", line 770, in get_dbms_compatible_column_names\n    _verify_column_names_exist_and_get_normalized_typed_column_names_map(\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/expectations/metrics/util.py\", line 855, in _verify_column_names_exist_and_get_normalized_typed_column_names_map\n    raise gx_exceptions.InvalidMetricAccessorDomainKwargsKeyError(\ngreat_expectations.exceptions.exceptions.InvalidMetricAccessorDomainKwargsKeyError: Error: The column \"payment_value\" in BatchData does not exist.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/validator/validation_graph.py\", line 290, in _resolve\n    self._execution_engine.resolve_metrics(\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/execution_engine/execution_engine.py\", line 294, in resolve_metrics\n    return self._process_direct_and_bundled_metric_computation_configurations(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/asus/miniconda3/envs/elt/lib/python3.11/site-packages/great_expectations/execution_engine/execution_engine.py\", line 582, in _process_direct_and_bundled_metric_computation_configurations\n    raise gx_exceptions.MetricResolutionError(\ngreat_expectations.exceptions.exceptions.MetricResolutionError: Error: The column \"payment_value\" in BatchData does not exist.\n",
+          "raised_exception": true
+        }
+      },
+      "expectation_config": {
+        "id": "f5539e3a-3f24-4e4b-820f-52a6df194f6e",
+        "kwargs": {
+          "batch_id": "olist_datasource-fact_sales_asset",
+          "column": "payment_value",
+          "min_value": 0.01
+        },
+        "meta": {},
+        "severity": "critical",
+        "type": "expect_column_values_to_be_between"
+      },
+      "meta": {},
+      "result": {},
+      "success": false
+    },
+    {
+      "exception_info": {
+        "exception_message": null,
+        "exception_traceback": null,
+        "raised_exception": false
+      },
+      "expectation_config": {
+        "id": "14a6b9db-78cd-4c73-a42a-379a8a22cb4f",
+        "kwargs": {
+          "batch_id": "olist_datasource-fact_sales_asset",
+          "column": "order_id"
+        },
+        "meta": {},
+        "severity": "critical",
+        "type": "expect_column_values_to_not_be_null"
+      },
+      "meta": {},
+      "result": {
+        "element_count": 112650,
+        "partial_unexpected_counts": [],
+        "partial_unexpected_list": [],
+        "unexpected_count": 0,
+        "unexpected_percent": 0.0
+      },
+      "success": true
+    }
+  ],
+  "statistics": {
+    "evaluated_expectations": 2,
+    "success_percent": 50.0,
+    "successful_expectations": 1,
+    "unsuccessful_expectations": 1
+  },
+  "success": false,
+  "suite_name": "olist_quality_suite",
+  "suite_parameters": {}
+}
