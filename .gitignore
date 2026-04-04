@@ -42,6 +42,10 @@ dbt_project/target/
 dbt_project/logs/
 dbt_project/dbt_packages/
 
+olist_transform/target/
+olist_transform/logs/
+
+
 # Notebooks
 .ipynb_checkpoints/
 *.ipynb_checkpoints
